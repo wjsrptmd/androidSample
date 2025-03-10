@@ -1,0 +1,3 @@
+[submodule "src/app_model"]
+	path = src/app_model
+	url = git@git-wjsrptmd:wjsrptmd/app_model.git

@@ -1,66 +1,48 @@
-import React, {JSX, useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
+import React, {JSX, useCallback, useEffect, useState} from 'react';
+import {FunctionMap} from '../app_model/model/Common.ts';
+import {ActivityIndicator} from 'react-native';
 import {ApiClient} from '../api/ApiClient.ts';
-import {UIComponent} from "../model/UiComponent.ts";
-
-// 컴포넌트 매핑 객체
-const componentMap: {[key: string]: React.FC<any>} = {
-  View: ({children, style}): JSX.Element => (
-    <View style={style}>{children}</View>
-  ),
-  Text: ({value, style}): JSX.Element => <Text style={style}>{value}</Text>,
-  Button: ({text, action}): JSX.Element => (
-    <Button title={text} onPress={() => handleAction(action)} />
-  ),
-};
-
-const handleAction = (action: string) => {
-  if (action === 'handleClick') {
-    Alert.alert('Button Clicked!');
-  }
-};
-
-const renderComponent = (ui: UIComponent): JSX.Element | null => {
-  console.log(ui);
-  const Component: React.FC<any> | null = componentMap[ui.component];
-  if (!Component) {
-    return null;
-  }
-
-  const children = ui.children?.map((child, index) => (
-    <React.Fragment key={index}>{renderComponent(child)}</React.Fragment>
-  ));
-
-  return <Component {...ui.props}>{children}</Component>;
-};
+import {Renderer} from '../app_model/Renderer.tsx';
+import {AppModel} from '../app_model/model/AppModel.ts';
 
 // Server-Driven UI 메인 컴포넌트
 export const ServerDrivenUI: React.FC = () => {
-  const [uiConfig, setUiConfig] = useState<UIComponent | null>(null);
+  const [uiCmp, setUiCmp] = useState<JSX.Element | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const initUi = async (appId: string) => {
-    const ret: UIComponent = await ApiClient.requestGet(`/app/ui/${appId}`);
-    setUiConfig(ret);
+  const testFunc = () => {
+    console.log('테스트 입니다. !!!!');
+  };
+
+  const funcMap: FunctionMap = {};
+  funcMap.testFunc = {
+    func: testFunc,
+    args: [],
+  };
+
+  const initUi = async (appId: number) => {
+    const ret: AppModel = await ApiClient.requestGet(`/app/${appId}`);
+    console.log(ret);
+
+    if (ret.error) {
+      // throw ret.error;
+    } else {
+      const component: React.JSX.Element = (
+        <Renderer appModel={ret} funcMap={funcMap} valueMap={{}} />
+      );
+      setUiCmp(component);
+    }
     setLoading(false);
   };
 
   useEffect(() => {
-    initUi('안녕하세요. 감사해요. 잘있어요. 다시만나요!.');
+    setLoading(true);
+    initUi(1);
   }, []);
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
-  if (!uiConfig) {
-    return <Text>Failed to load UI</Text>;
-  }
 
-  return renderComponent(uiConfig);
+  return uiCmp;
 };
