@@ -7,5 +7,13 @@ module.exports = {
       safe: false,
       allowUndefined: false,
     }],
+    ['module-resolver', {
+      root: ['./src'],
+      alias: {
+        '@app_model': './src/app_model',
+        '@components': './src/components',
+        '@api': './src/api',
+      },
+    }],
   ],
 };

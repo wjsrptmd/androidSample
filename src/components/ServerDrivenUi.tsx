@@ -1,9 +1,9 @@
 import React, {JSX, useCallback, useEffect, useState} from 'react';
-import {FunctionMap} from '../app_model/model/Common.ts';
+import {FunctionMap} from '@app_model/model/Common.ts';
+import {AppModel} from '@app_model/model/AppModel.ts';
 import {ActivityIndicator} from 'react-native';
-import {ApiClient} from '../api/ApiClient.ts';
-import {Renderer} from '../app_model/Renderer.tsx';
-import {AppModel} from '../app_model/model/AppModel.ts';
+import {ApiClient} from '@api/ApiClient.ts';
+import {Renderer} from "@components/Renderer.tsx";
 
 // Server-Driven UI 메인 컴포넌트
 export const ServerDrivenUI: React.FC = () => {
