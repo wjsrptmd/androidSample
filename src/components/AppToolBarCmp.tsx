@@ -24,7 +24,7 @@ export const AppToolBarCmp: React.FC<AppToolBarProps> = (
     const valueMap = appToolBarProps.valueMap;
     const funcMap = appToolBarProps.funcMap;
 
-    const {activeStatus, toolbarItems} = appToolBarProps.appToolbar;
+    const {style, toolbarItems, activeStatus} = appToolBarProps.appToolbar;
     if (activeStatus === ActiveStatus.inactive) {
         return null;
     }
@@ -36,9 +36,9 @@ export const AppToolBarCmp: React.FC<AppToolBarProps> = (
     const getComponent = (item: ToolbarItem): JSX.Element | null => {
         const type = item.content.type;
         if (type === 'icon') {
-            return (<Image src={item.content.value}/>);
+            return (<Image src={item.content.value} style={item.style} />);
         } else if (type === 'text') {
-            return (<Text>{item.content.value}</Text>);
+            return (<Text style={item.style}>{item.content.value}</Text>);
         } else {
             return null;
         }
@@ -58,7 +58,7 @@ export const AppToolBarCmp: React.FC<AppToolBarProps> = (
     };
 
     return (
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={style}>
             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
                 {leftItems?.map((item: ToolbarItem, index: number) => component(item, index),)}
             </View>
