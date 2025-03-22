@@ -12,36 +12,6 @@ import {
 } from 'react-native';
 import {FunctionMap, ValueMap} from '@app_model/model/Common.ts';
 
-const toolbarStyle = StyleSheet.create({
-    toolbar: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    left: {
-        flex: 1, // 왼쪽 정렬
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
-    center: {
-        flex: 1, // 중앙 정렬
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderStyle: 'solid',
-    },
-    right: {
-        flex: 1, // 오른쪽 정렬
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-    },
-});
-
 interface AppToolBarProps {
     appToolbar: AppToolbar;
     valueMap: ValueMap;
@@ -59,24 +29,16 @@ export const AppToolBarCmp: React.FC<AppToolBarProps> = (
         return null;
     }
 
-    const alignValue = (
-        position: 'left' | 'center' | 'right',
-    ): 'flex-start' | 'flex-end' | 'center' => {
-        if (position === 'left') {
-            return 'flex-start';
-        } else if (position === 'right') {
-            return 'flex-end';
-        } else {
-            return 'center';
-        }
-    };
+    const leftItems: ToolbarItem[] = toolbarItems ? toolbarItems.filter((item: ToolbarItem) => item.position === 'left') : [];
+    const centerItems: ToolbarItem[] = toolbarItems ? toolbarItems.filter((item: ToolbarItem) => item.position === 'center') : [];
+    const rightItems: ToolbarItem[] = toolbarItems ? toolbarItems.filter((item: ToolbarItem) => item.position === 'right') : [];
 
     const getComponent = (item: ToolbarItem): JSX.Element | null => {
         const type = item.content.type;
         if (type === 'icon') {
-            return (<Image style={{alignSelf: alignValue(item.position)}} src={item.content.value}/>);
+            return (<Image src={item.content.value}/>);
         } else if (type === 'text') {
-            return (<Text style={{alignSelf: alignValue(item.position)}}> {item.content.value}  </Text>);
+            return (<Text>{item.content.value}</Text>);
         } else {
             return null;
         }
@@ -96,7 +58,15 @@ export const AppToolBarCmp: React.FC<AppToolBarProps> = (
     };
 
     return (
-        <View style={toolbarStyle.toolbar}>
-            {toolbarItems?.map((item: ToolbarItem, index: number) => component(item, index),)}
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
+                {leftItems?.map((item: ToolbarItem, index: number) => component(item, index),)}
+            </View>
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+                {centerItems?.map((item: ToolbarItem, index: number) => component(item, index),)}
+            </View>
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
+                {rightItems?.map((item: ToolbarItem, index: number) => component(item, index),)}
+            </View>
         </View>);
 };
