@@ -26,3 +26,4 @@ npm run android
 #### 디바이스에서 app 실행
 * [노션 링크](https://www.notion.so/React-1953806cf87880238089d76df88a6b13?pvs=4#1953806cf87880d39878f9c38dbe13d0) 참조
 
+.
